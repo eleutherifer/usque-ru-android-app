@@ -22,10 +22,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          cache: gradle
 
-      - name: Set up Gradle
+      - name: Set up Gradle 8.5
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.5'
 
       - name: Check signing secrets
         id: signing
@@ -50,7 +51,7 @@ jobs:
 
       - name: Build debug APK
         if: ${{ steps.signing.outputs.has_signing != 'true' }}
-        run: gradle assembleDebug --no-daemon
+        run: gradle --version && gradle assembleDebug --no-daemon
 
       - name: Build signed release APK
         if: ${{ steps.signing.outputs.has_signing == 'true' }}
@@ -59,7 +60,7 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: gradle assembleRelease --no-daemon
+        run: gradle --version && gradle assembleRelease --no-daemon
 
       - name: Prepare APK artifact
         run: |
