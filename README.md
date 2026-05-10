@@ -19,12 +19,6 @@
 
 ---
 
-Usque Android App is a native Android VPN app for Cloudflare WARP / Zero Trust. It wraps the MASQUE-based Go client from the upstream [`usque`](https://github.com/Diniboy1123/usque) project and provides an Android UI, `VpnService` integration, per-app routing, and automated APK releases.
-
-- **Android package**: `com.warp.usque`
-- **Latest release**: <https://github.com/garthnet/usque-android-app/releases/tag/v1.0.2>
-- **Latest APK**: <https://github.com/garthnet/usque-android-app/releases/download/v1.0.2/usque-android-app-release-v1.0.2.apk>
-
 ## ✨ Features
 
 - 🚀 **Cloudflare WARP** - MASQUE-based WARP tunnel using the upstream Go core
