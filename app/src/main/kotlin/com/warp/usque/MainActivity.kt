@@ -362,7 +362,7 @@ class MainActivity : Activity() {
         content.addView(sectionTitle(tr("当前连接参数", "Current Connection")))
         val config = card()
         val configBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(14), dp(8), dp(14), dp(8)) }
-        sniInput = input("SNI", "yandex.run")
+        sniInput = input("SNI", "yandex.ru")
         endpointInput = input("Endpoint IP", "162.159.198.2")
         portInput = input("Connect Port", "443")
         defaultBtn = secondaryButton(tr("读取默认 endpoint", "Load Default Endpoint"))
