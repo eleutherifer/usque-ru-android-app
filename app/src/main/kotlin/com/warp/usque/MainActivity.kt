@@ -1,6 +1,7 @@
 package com.warp.usque
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -13,12 +14,13 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.ScrollingMovementMethod
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.checkbox.MaterialCheckBox
@@ -28,16 +30,14 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.divider.MaterialDivider
 import usqueandroid.Usqueandroid
-import java.io.File
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.concurrent.Executors
-
+import java.io.File
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import android.content.Context
-//import android.util.Log
+import java.nio.charset.Charsets
+import java.util.concurrent.Executors
 
 class MainActivity : Activity() {
     companion object { private const val REQ_VPN = 1001 }
