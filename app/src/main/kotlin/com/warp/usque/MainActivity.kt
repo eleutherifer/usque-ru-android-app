@@ -369,56 +369,48 @@ class MainActivity : Activity() {
         overwriteProfileBtn = secondaryButton(tr("Перезаписать текущий", "Overwrite Current"))
         deleteProfileBtn = secondaryButton(tr("Удалить выбранный профиль", "Delete Profile"))
 
-        // 🛠️ ИСПРАВЛЕНИЕ: Настраиваем отображение текста для каждой кнопки
-        val profileButtons = listOf(saveNewProfileBtn, overwriteProfileBtn, deleteProfileBtn)
-        profileButtons.forEach { btn ->
+        // 🛠️ ИСПРАВЛЕНИЕ: Настраиваем отображение текста для ВСЕХ трех кнопок управления профилями
+        val profileButtonsList = listOf(saveNewProfileBtn, overwriteProfileBtn, deleteProfileBtn)
+        profileButtonsList.forEach { btn ->
             btn.isSingleLine = false         // Разрешаем перенос на новую строку
             btn.maxLines = 2                 // Ограничиваем максимум двумя строками
-            btn.isAllCaps = false            // Отключаем принудительные заглавные буквы (если MaterialButton делает их БОЛЬШИМИ)
-            
-            // Уменьшаем боковые отступы до 4dp, чтобы тексту было просторнее
-            btn.setPadding(dp(4), btn.paddingTop, dp(4), btn.paddingBottom)
-        }
-
-        exportConfigBtn = secondaryButton(tr("Экспорт всего конфига", "Export entire config"))
-        importConfigBtn = secondaryButton(tr("Импорт из буфера", "Import from buffer"))
-        profileBox.addView(TextView(this).apply { text = tr("Профили настроек", "Profiles"); textSize = 18f; setTextColor(textColor); setTypeface(null, Typeface.BOLD) })
-        profileBox.addView(TextView(this).apply { text = tr("Сохранить текущие SNI / Endpoint / Port для быстрого переключения.", "Save current SNI / Endpoint / Port for quick switching."); textSize = 12f; setTextColor(subText); setPadding(0, dp(2), 0, dp(6)) })
-        profileBox.addView(profileSpinner, LinearLayout.LayoutParams(-1, dp(42)))
-        profileBox.addView(inputWrap(tr("Название профиля", "Profile Name"), profileNameInput), LinearLayout.LayoutParams(-1, dp(70)).apply { topMargin = dp(5) })
-/*
-        val profileActions = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        profileActions.addView(overwriteProfileBtn, LinearLayout.LayoutParams(0, dp(42), 1f).apply { rightMargin = dp(8) })
-        profileActions.addView(saveNewProfileBtn, LinearLayout.LayoutParams(0, dp(42), 1f))
-        profileBox.addView(profileActions, LinearLayout.LayoutParams(-1, dp(48)))
-        profileBox.addView(deleteProfileBtn, LinearLayout.LayoutParams(-1, dp(42)).apply { topMargin = dp(5) })
-*/
-        // 1. Принудительно разрешаем кнопкам переносить текст в 2 строки
-        profileButtons = listOf(overwriteProfileBtn, saveNewProfileBtn)
-        profileButtons.forEach { btn ->
-            btn.isSingleLine = false
-            btn.maxLines = 2
+            btn.isAllCaps = false            // Отключаем принудительный Caps Lock
             btn.ellipsize = null
+            
             // Уменьшаем отступы со всех сторон, чтобы двухстрочный текст сидел плотно
             btn.setPadding(dp(4), dp(2), dp(4), dp(2))
-            // Отключаем встроенную минимальную высоту MaterialButton (по умолчанию она 48dp)
+            
+            // Отключаем встроенную минимальную высоту MaterialButton (чтобы кнопки не раздувались)
             btn.minHeight = 0
             btn.minimumHeight = 0
         }
 
-        // 2. Создаем контейнер с автоматической высотой (WRAP_CONTENT вместо фиксированной)
+        exportConfigBtn = secondaryButton(tr("Экспорт всего конфига", "Export entire config"))
+        importConfigBtn = secondaryButton(tr("Импорт из буфера", "Import from buffer"))
+        
+        profileBox.addView(TextView(this).apply { text = tr("Профили настроек", "Profiles"); textSize = 18f; setTextColor(textColor); setTypeface(null, Typeface.BOLD) })
+        profileBox.addView(TextView(this).apply { text = tr("Сохранить текущие SNI / Endpoint / Port для быстрого переключения.", "Save current SNI / Endpoint / Port for quick switching."); textSize = 12f; setTextColor(subText); setPadding(0, dp(2), 0, dp(6)) })
+        profileBox.addView(profileSpinner, LinearLayout.LayoutParams(-1, dp(42)))
+        profileBox.addView(inputWrap(tr("Название профиля", "Profile Name"), profileNameInput), LinearLayout.LayoutParams(-1, dp(70)).apply { topMargin = dp(5) })
+
+        // Создаем горизонтальный контейнер для первых двух кнопок с автоматической высотой
         val profileActions = LinearLayout(this).apply { 
             orientation = LinearLayout.HORIZONTAL 
         }
         
-        // 3. Добавляем кнопки с высотой WRAP_CONTENT, чтобы они могли расширяться вниз
+        // Добавляем кнопки «Перезаписать» и «Сохранить как новый» с высотой WRAP_CONTENT
         profileActions.addView(overwriteProfileBtn, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { 
             rightMargin = dp(8) 
         })
         profileActions.addView(saveNewProfileBtn, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         
-        // 4. Добавляем контейнер в profileBox тоже с высотой WRAP_CONTENT (вместо dp(48))
+        // Добавляем горизонтальный контейнер в основной блок
         profileBox.addView(profileActions, LinearLayout.LayoutParams(-1, ViewGroup.LayoutParams.WRAP_CONTENT))
+        
+        // Возвращаем кнопку «Удалить выбранный профиль» на экран с автоматической высотой
+        profileBox.addView(deleteProfileBtn, LinearLayout.LayoutParams(-1, ViewGroup.LayoutParams.WRAP_CONTENT).apply { 
+            topMargin = dp(8) 
+        })
 
 
         // 🟢 НАШ НОВЫЙ БЛОК: Создаем горизонтальный ряд для Экспорта и Импорта
