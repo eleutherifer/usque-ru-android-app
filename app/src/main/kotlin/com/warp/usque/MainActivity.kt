@@ -977,27 +977,26 @@ class MainActivity : Activity() {
         try {
             val cloudflareData = JSONObject(serverResponseJson)
             
-            // СТРОГОЕ СООТВЕТСТВИЕ СТРУКТУРЕ ЯДРА USQUE
             val finalConfig = JSONObject().apply {
+                // 1. Ключи и токены авторизации забираем из ответа воркера
                 put("private_key", cloudflareData.getString("privKey"))
-                put("public_key", cloudflareData.getString("cloudflare_pub")) // ИСПРАВЛЕНО: Ключ сервера для MASQUE
-                put("access_token", cloudflareData.optString("token", ""))   // ИСПРАВЛЕНО: Токен авторизации аккаунта
-                put("ipv4", cloudflareData.getString("client_ipv4"))         // ИСПРАВЛЕНО: Внутренний IP без лишних префиксов
-                put("ipv6", cloudflareData.getString("client_ipv6"))         // ИСПРАВЛЕНО: Внутренний IPv6
+                put("public_key", cloudflareData.getString("cloudflare_pub"))
+                put("access_token", cloudflareData.optString("token", ""))
+                put("ipv4", cloudflareData.getString("client_ipv4"))
+                put("ipv6", cloudflareData.getString("client_ipv6"))
                 
-                // Параметры для подстановки в сетевой сокет сервиса
-                put("endpoint", selectedIp)
-                put("port", selectedPort.toIntOrNull() ?: 443)
-                put("sni", selectedSni.replace(Regex("^(https?://)?(www\\.)?"), "").substringBefore("/"))
+                // 2. Сетевые настройки берем СТРОГО из интерфейса приложения (то, что ввел пользователь)
+                put("endpoint", selectedIp.trim().ifBlank { "162.159.198.2" })
+                put("port", selectedPort.toIntOrNull()?.takeIf { it > 0 } ?: 443)
+                put("sni", selectedSni.replace(Regex("^(https?://)?(www\\.)?"), "").substringBefore("/").ifBlank { "yandex.ru" })
             }
             
             configFile.writeText(finalConfig.toString(2))
-            android.util.Log.d("USQUE_BUILD", "config.json успешно собран под стандарты Go-ядра!")
+            android.util.Log.d("USQUE_BUILD", "config.json успешно собран из введенных пользователем данных!")
         } catch (e: Exception) {
             android.util.Log.e("USQUE_BUILD", "Ошибка сборки конфига: ${e.message}")
         }
     }
-
 
 
 
