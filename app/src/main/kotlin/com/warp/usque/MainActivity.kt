@@ -394,7 +394,7 @@ class MainActivity : Activity() {
         profileBox.addView(deleteProfileBtn, LinearLayout.LayoutParams(-1, dp(42)).apply { topMargin = dp(5) })
 */
         // 1. Принудительно разрешаем кнопкам переносить текст в 2 строки
-        val profileButtons = listOf(overwriteProfileBtn, saveNewProfileBtn)
+        profileButtons = listOf(overwriteProfileBtn, saveNewProfileBtn)
         profileButtons.forEach { btn ->
             btn.isSingleLine = false
             btn.maxLines = 2
