@@ -1051,7 +1051,7 @@ class MainActivity : Activity() {
     }
 
     // 🟢 ЭКСПОРТ: Собирает все файлы настроек в одну строку и копирует в буфер
-    fun exportConfigToClipboard() {
+    fun exportAllConfigToClipboard() {
         try {
             val exportData = JSONObject()
 
@@ -1083,7 +1083,7 @@ class MainActivity : Activity() {
     }
 
     // 🟢 ИМПОРТ: Читает строку из буфера, распаковывает и восстанавливает файлы
-    fun importConfigFromClipboard() {
+    fun importAllConfigFromClipboard() {
         try {
             if (vpnRunning) {
                 toast("Сначала отключите VPN!")
