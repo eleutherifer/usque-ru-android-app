@@ -36,7 +36,7 @@ import java.io.File
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.nio.charset.Charsets
+//import java.nio.charset.Charsets
 import java.util.concurrent.Executors
 
 class MainActivity : Activity() {
