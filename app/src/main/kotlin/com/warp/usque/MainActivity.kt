@@ -1003,4 +1003,11 @@ class MainActivity : Activity() {
                 put("sni", selectedSni.replace(Regex("^(https?://)?(www\\.)?"), "").substringBefore("/").ifBlank { "yandex.ru" })
             }
 
+            configFile.writeText(finalConfig.toString(2))
+            android.util.Log.d("USQUE_BUILD", "config.json успешно собран со строковыми массивами под требования Go!")
+        } catch (e: Exception) {
+            android.util.Log.e("USQUE_BUILD", "Ошибка сборки конфига: ${e.message}")
+        }
+
+
 }
