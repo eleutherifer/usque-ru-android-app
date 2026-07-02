@@ -1,6 +1,8 @@
 package com.warp.usque
 
 import android.app.Activity
+import android.content.ClipboardManager
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -74,7 +76,9 @@ class MainActivity : Activity() {
     private lateinit var saveNewProfileBtn: MaterialButton
     private lateinit var overwriteProfileBtn: MaterialButton
     private lateinit var deleteProfileBtn: MaterialButton
-    private lateinit var languageZhButton: MaterialButton
+    private lateinit var exportConfigBtn: MaterialButton
+    private lateinit var importConfigBtn: MaterialButton
+    private lateinit var languageRuButton: MaterialButton
     private lateinit var languageEnButton: MaterialButton
     private lateinit var selectAllAppsBtn: MaterialButton
     private lateinit var clearAllAppsBtn: MaterialButton
@@ -105,7 +109,7 @@ class MainActivity : Activity() {
     private val bg = Color.rgb(255, 248, 242)
     private val surface = Color.rgb(255, 255, 255)
     private val surface2 = Color.rgb(255, 238, 224)
-    private val primary = Color.rgb(246, 196, 155) // soft orange / 淡橘色
+    private val primary = Color.rgb(246, 196, 155) // soft orange / светло-оранжевый
     private val darkAccent = Color.rgb(205, 126, 73)
     private val mango = Color.rgb(255, 224, 195)
     private val onPrimary = Color.rgb(82, 49, 28)
@@ -197,9 +201,18 @@ class MainActivity : Activity() {
         val configTab = tabButton(tr("Настройки", "Config"))
         val appsTab = tabButton(tr("Приложения", "Apps"))
         val tabsList = listOf(overviewTab, configTab, appsTab)
+/*
         tabsList.forEachIndexed { index, b ->
             tabs.addView(b, LinearLayout.LayoutParams(0, dp(36), 1f).apply { if (index < 2) rightMargin = dp(8) })
         }
+*/
+        tabsList.forEachIndexed { index, b ->
+            // ИСПРАВЛЕНО: Уменьшаем внутренние боковые отступы до 4dp, чтобы длинные русские слова влезли целиком
+            b.setPadding(dp(4), b.paddingTop, dp(4), b.paddingBottom)
+            
+            tabs.addView(b, LinearLayout.LayoutParams(0, dp(36), 1f).apply { if (index < 2) rightMargin = dp(8) })
+        }
+
 
         val homePage = buildHomePage()
         val configPage = buildConfigPage()
@@ -232,6 +245,8 @@ class MainActivity : Activity() {
         saveNewProfileBtn.setOnClickListener { saveAsNewProfile() }
         overwriteProfileBtn.setOnClickListener { overwriteSelectedProfile() }
         deleteProfileBtn.setOnClickListener { deleteSelectedProfile() }
+        exportConfigBtn.setOnClickListener { exportAllConfigToClipboard() }
+        importConfigBtn.setOnClickListener { importAllConfigFromClipboard() }
         connectButton.setOnClickListener { if (vpnRunning) disconnectVpn() else connectVpn() }
         sniInput.addTextChangedListener(dirtyWatcher())
         endpointInput.addTextChangedListener(dirtyWatcher())
@@ -333,9 +348,9 @@ class MainActivity : Activity() {
 
         val languageCard = card()
         val languageBox = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setPadding(dp(16), dp(12), dp(16), dp(12)) }
-        languageZhButton = secondaryButton("Русский").apply { setOnClickListener { setLanguage(false) } }
+        languageRuButton = secondaryButton("Русский").apply { setOnClickListener { setLanguage(false) } }
         languageEnButton = secondaryButton("English").apply { setOnClickListener { setLanguage(true) } }
-        languageBox.addView(languageZhButton, LinearLayout.LayoutParams(0, dp(50), 1f).apply { rightMargin = dp(10) })
+        languageBox.addView(languageRuButton, LinearLayout.LayoutParams(0, dp(50), 1f).apply { rightMargin = dp(10) })
         languageBox.addView(languageEnButton, LinearLayout.LayoutParams(0, dp(50), 1f))
         languageCard.addView(languageBox)
         content.addView(languageCard, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(28) })
@@ -353,6 +368,8 @@ class MainActivity : Activity() {
         saveNewProfileBtn = secondaryButton(tr("Сохранить как новый", "Save as New"))
         overwriteProfileBtn = secondaryButton(tr("Перезаписать текущий", "Overwrite Current"))
         deleteProfileBtn = secondaryButton(tr("Удалить выбранный профиль", "Delete Profile"))
+        exportConfigBtn = secondaryButton(tr("Экспорт всего конфига", "Export entire config"))
+        importConfigBtn = secondaryButton(tr("Импорт из буфера", "Import from buffer"))
         profileBox.addView(TextView(this).apply { text = tr("Профили настроек", "Profiles"); textSize = 18f; setTextColor(textColor); setTypeface(null, Typeface.BOLD) })
         profileBox.addView(TextView(this).apply { text = tr("Сохранить текущие SNI / Endpoint / Port для быстрого переключения.", "Save current SNI / Endpoint / Port for quick switching."); textSize = 12f; setTextColor(subText); setPadding(0, dp(2), 0, dp(6)) })
         profileBox.addView(profileSpinner, LinearLayout.LayoutParams(-1, dp(42)))
@@ -362,6 +379,31 @@ class MainActivity : Activity() {
         profileActions.addView(saveNewProfileBtn, LinearLayout.LayoutParams(0, dp(42), 1f))
         profileBox.addView(profileActions, LinearLayout.LayoutParams(-1, dp(48)))
         profileBox.addView(deleteProfileBtn, LinearLayout.LayoutParams(-1, dp(42)).apply { topMargin = dp(5) })
+
+
+        // 🟢 НАШ НОВЫЙ БЛОК: Создаем горизонтальный ряд для Экспорта и Импорта
+        val backupActions = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+
+        // Инициализируем и добавляем кнопку Экспорта (левая)
+        exportConfigBtn = MaterialButton(this).apply {
+            text = "Экспорт"
+            setOnClickListener { exportAllConfigToClipboard() }
+        }
+        backupActions.addView(exportConfigBtn, LinearLayout.LayoutParams(0, dp(42), 1f).apply { rightMargin = dp(8) })
+
+        // Инициализируем и добавляем кнопку Импорта (правая)
+        importConfigBtn = MaterialButton(this).apply {
+            text = "Импорт"
+            setOnClickListener { importAllConfigFromClipboard() }
+        }
+        backupActions.addView(importConfigBtn, LinearLayout.LayoutParams(0, dp(42), 1f))
+
+        // Укладываем готовый ряд кнопок бэкапа в основной вертикальный контейнер профилей
+        profileBox.addView(backupActions, LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(8) })
+
+
         profileCard.addView(profileBox)
         content.addView(profileCard)
 
@@ -650,7 +692,7 @@ class MainActivity : Activity() {
         val base = profileNameInput.text?.toString().orEmpty().trim().ifBlank { normalizedEndpoint() }
         val name = uniqueProfileName(base)
         profiles[name] = Triple(sniInput.text?.toString().orEmpty().ifBlank { "apteka.ru" }, normalizedEndpointHost(), normalizedPort())
-        persistProfiles(); refreshProfileSpinner(); profileNameInput.setText(name); syncConfigProfileSpinner(name); toast(tr("已保存为新方案：$name", "Saved as new profile: $name"))
+        persistProfiles(); refreshProfileSpinner(); profileNameInput.setText(name); syncConfigProfileSpinner(name); toast(tr("Сохранено как новый профиль: $name", "Saved as new profile: $name"))
     }
     private fun overwriteSelectedProfile() {
         val selected = selectedProfileName()
@@ -814,10 +856,10 @@ class MainActivity : Activity() {
         val dark = android.content.res.ColorStateList.valueOf(darkAccent)
         connectButton.backgroundTintList = dark
         connectButton.setTextColor(Color.WHITE)
-        if (::languageZhButton.isInitialized) {
-            languageZhButton.backgroundTintList = android.content.res.ColorStateList.valueOf(if (!useEnglish) darkAccent else primary)
+        if (::languageRuButton.isInitialized) {
+            languageRuButton.backgroundTintList = android.content.res.ColorStateList.valueOf(if (!useEnglish) darkAccent else primary)
             languageEnButton.backgroundTintList = android.content.res.ColorStateList.valueOf(if (useEnglish) darkAccent else primary)
-            languageZhButton.setTextColor(if (!useEnglish) Color.WHITE else onPrimary)
+            languageRuButton.setTextColor(if (!useEnglish) Color.WHITE else onPrimary)
             languageEnButton.setTextColor(if (useEnglish) Color.WHITE else onPrimary)
         }
         updateConfigState(extra)
@@ -1007,4 +1049,85 @@ class MainActivity : Activity() {
             android.util.Log.e("USQUE_BUILD", "Ошибка сборки конфига: ${e.message}")
         }
     }
+
+    // 🟢 ЭКСПОРТ: Собирает все файлы настроек в одну строку и копирует в буфер
+    fun exportConfigToClipboard() {
+        try {
+            val exportData = JSONObject()
+
+            // 1. Читаем основной config.json (ключи MASQUE, IP, Порт, SNI)
+            if (configFile.exists()) {
+                exportData.put("config", JSONObject(configFile.readText()))
+            }
+
+            // 2. Читаем сохраненные профили (схемы переключения)
+            // Имя файла "profiles.json" может отличаться, проверьте как оно названо в вашем коде
+            val profilesFile = File(filesDir, "profiles.json") 
+            if (profilesFile.exists()) {
+                exportData.put("profiles", JSONObject(profilesFile.readText()))
+            }
+
+            // 3. Переводим в Base64, чтобы ТСПУ или мессенджеры не ломали структуру кавычек
+            val rawBytes = exportData.toString().toByteArray(java.nio.charset.StandardCharsets.UTF_8)
+            val base64String = android.util.Base64.encodeToString(rawBytes, android.util.Base64.NO_WRAP)
+
+            // 4. Копируем в буфер обмена Android
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Usque Config", base64String)
+            clipboard.setPrimaryClip(clip)
+
+            toast("Конфигурация скопирована в буфер обмена!")
+        } catch (e: Exception) {
+            toast("Ошибка экспорта: ${e.message}")
+        }
+    }
+
+    // 🟢 ИМПОРТ: Читает строку из буфера, распаковывает и восстанавливает файлы
+    fun importConfigFromClipboard() {
+        try {
+            if (vpnRunning) {
+                toast("Сначала отключите VPN!")
+                return
+            }
+
+            // 1. Получаем текст из буфера обмена
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = clipboard.primaryClip
+            if (clipData == null || clipData.itemCount == 0) {
+                toast("Буфер обмена пуст!")
+                return
+            }
+
+            val base64String = clipData.getItemAt(0).text.toString().trim()
+            
+            // 2. Декодируем Base64 обратно в JSON
+            val decodedBytes = android.util.Base64.decode(base64String, android.util.Base64.DEFAULT)
+            val decodedString = String(decodedBytes, java.nio.charset.StandardCharsets.UTF_8)
+            val importData = JSONObject(decodedString)
+
+            // 3. Восстанавливаем основной config.json
+            if (importData.has("config")) {
+                configFile.writeText(importData.getJSONObject("config").toString(2))
+            }
+
+            // 4. Восстанавливаем профили переключения
+            if (importData.has("profiles")) {
+                val profilesFile = File(filesDir, "profiles.json")
+                profilesFile.writeText(importData.getJSONObject("profiles").toString(2))
+            }
+
+            // 5. Обновляем интерфейс приложения, чтобы новые данные отобразились на экране
+            runOnUiThread {
+                toast("Конфигурация успешно импортирована!")
+                // Перерисовываем интерфейс (подгружаем новые SNI/IP в поля ввода)
+                refreshState("Конфиг обновлен")
+                // Вызываем встроенную китайскую функцию обновления полей, если она есть
+                runCatching { saveInputs() } 
+            }
+        } catch (e: Exception) {
+            toast("Ошибка импорта: Неверный формат данных")
+        }
+    }
+
+
 }
