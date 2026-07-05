@@ -6,7 +6,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId 'com.warp.usque.ru'
+        applicationId 'com.warp.usque'
         minSdk 24
         targetSdk 34
         versionCode 3
@@ -29,7 +29,15 @@ android {
     }
 
     buildTypes {
-        debug { minifyEnabled false }
+        debug { 
+            minifyEnabled false 
+            shrinkResources false
+            if (System.getenv('ANDROID_KEYSTORE_FILE')) {
+                signingConfig signingConfigs.release
+            }
+            // РАЗРЕШАЕМ ADB ДОСТУП к папке /data/...
+            debuggable true
+        }
         release {
             minifyEnabled false
             shrinkResources false
