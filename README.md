@@ -1,18 +1,18 @@
-<h1 align="center">Usque RU Android App</h1>
+<h1 align="center">Usque Android App RU</h1>
 
 <p align="center">
   <strong>Cloudflare WARP / MASQUE VPN Client for Android</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/eleutherifer/usque-ru-android-app/releases">
-    <img src="https://img.shields.io/github/v/release/eleutherifer/usque-ru-android-app?style=flat-square" alt="Release">
+  <a href="https://github.com/eleutherifer/usque-android-app-ru/releases">
+    <img src="https://img.shields.io/github/v/release/eleutherifer/usque-android-app-ru?style=flat-square" alt="Release">
   </a>
-  <a href="https://github.com/eleutherifer/usque-ru-android-app">
+  <a href="https://github.com/eleutherifer/usque-android-app-ru">
     <img src="https://img.shields.io/badge/platform-android-blue?style=flat-square" alt="Platform">
   </a>
-  <a href="https://github.com/eleutherifer/usque-ru-android-app/actions/workflows/android.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/eleutherifer/usque-ru-android-app/android.yml?branch=main&style=flat-square" alt="Android APK">
+  <a href="https://github.com/eleutherifer/usque-android-app-ru/actions/workflows/android.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/eleutherifer/usque-android-app-ru/android.yml?branch=main&style=flat-square" alt="Android APK">
   </a>
 </p>
 
@@ -32,12 +32,12 @@
 
 ## 📲 Download
 
-Download the latest APK from the [Releases](https://github.com/eleutherifer/usque-ru-android-app/releases) page.
+Download the latest APK from the [Releases](https://github.com/eleutherifer/usque-android-app-ru/releases) page.
 
 Direct download:
 
 ```text
-https://github.com/eleutherifer/usque-ru-android-app/releases/download/v1.0.2.1/usque-ru-android-app-release-v1.0.2.1.apk
+https://github.com/eleutherifer/usque-android-app-ru/releases/download/v1.0.2.1/usque-android-app-ru-release-v1.0.2.1.apk
 ```
 
 > The GitHub Actions workflow reads `versionName` from `app/build.gradle` and publishes the APK to the matching versioned Release, for example `1.0.2.1` → `v1.0.2.1`.
@@ -121,7 +121,7 @@ docs/github-actions-signing.md
 ## 🏗️ Architecture
 
 ```text
-usque-ru-android-app/
+usque-android-app-ru/
 ├── app/
 │   ├── src/main/
 │   │   ├── kotlin/com/warp/usque/      # Kotlin UI and VPN service
