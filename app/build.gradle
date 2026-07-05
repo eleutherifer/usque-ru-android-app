@@ -6,7 +6,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId 'com.warp.usque'
+        applicationId 'com.warp.usque.ru'
         minSdk 24
         targetSdk 34
         versionCode 3

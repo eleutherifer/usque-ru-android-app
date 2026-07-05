@@ -1147,12 +1147,12 @@ class MainActivity : Activity() {
             return
         }
         
-        // Если регистрация уже была создана ранее, перед стартом обновляем в ней IP/Порт из полей ввода
-        val selectedIp = normalizedEndpointHost()
-        val selectedPort = normalizedPort().toString()
-        if (configFile.exists()) {
-            saveFinalConfig(configFile.readText(), selectedIp, selectedPort)
-        }
+//        // Если регистрация уже была создана ранее, перед стартом обновляем в ней IP/Порт из полей ввода
+//        val selectedIp = normalizedEndpointHost()
+//        val selectedPort = normalizedPort().toString()
+//        if (configFile.exists()) {
+//            saveFinalConfig(configFile.readText(), selectedIp, selectedPort)
+//        }
         
         requestVpnAndStart()
     }
