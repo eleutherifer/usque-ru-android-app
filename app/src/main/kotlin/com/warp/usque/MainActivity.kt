@@ -965,7 +965,7 @@ class MainActivity : Activity() {
 
 
 
-/*
+
     private fun connectVpn() {
         saveInputs()
         if (vpnRunning) { toast(tr("Приложение уже работает", "Already running")); return }
@@ -991,7 +991,7 @@ class MainActivity : Activity() {
         }
         requestVpnAndStart()
     }
-*/
+
 /*
     private fun connectVpn() {
         saveInputs()
@@ -1090,6 +1090,8 @@ class MainActivity : Activity() {
         requestVpnAndStart()
     }
 */
+
+/*
     private fun connectVpn() {
         saveInputs()
         if (vpnRunning) { toast(tr("Приложение уже работает", "Already running")); return }
@@ -1156,7 +1158,7 @@ class MainActivity : Activity() {
         
         requestVpnAndStart()
     }
-
+*/
 
 
 
@@ -1216,6 +1218,7 @@ class MainActivity : Activity() {
         else if (requestCode == REQ_VPN) toast("Доступ к VPN не разрешен в системе")
     }
 
+/*
     fun fetchKeysFromWorkerProxy(context: Context, userIp: String, userPort: String) {
         Thread {
             try {
@@ -1265,6 +1268,7 @@ class MainActivity : Activity() {
             }
         }.start()
     }
+*/
 
 /*
     fun saveFinalConfig(serverResponseJson: String, selectedIp: String, selectedPort: String, selectedSni: String) {
@@ -1340,6 +1344,8 @@ class MainActivity : Activity() {
         }
     }
 */
+
+/*
     fun saveFinalConfig(serverResponseJson: String, selectedIp: String, selectedPort: String) {
         try {
             val cloudflareData = JSONObject(serverResponseJson)
@@ -1384,7 +1390,7 @@ class MainActivity : Activity() {
             android.util.Log.e("USQUE_BUILD", "Ошибка сборки конфига: ${e.message}")
         }
     }
-
+*/
 
 //    // 🟢 ЭКСПОРТ: Собирает все файлы настроек в одну строку и копирует в буфер
     // 🟢 ЭКСПОРТ: Собирает все файлы настроек в чистый JSON и копирует в буфер
@@ -1404,11 +1410,10 @@ class MainActivity : Activity() {
                 exportData.put("profiles", JSONObject(profilesFile.readText()))
             }
 
-/*
-            // 3. Переводим в Base64, чтобы ТСПУ или мессенджеры не ломали структуру кавычек
-            val rawBytes = exportData.toString().toByteArray(java.nio.charset.StandardCharsets.UTF_8)
-            val base64String = android.util.Base64.encodeToString(rawBytes, android.util.Base64.NO_WRAP)
-*/
+//            // 3. Переводим в Base64, чтобы ТСПУ или мессенджеры не ломали структуру кавычек
+//            val rawBytes = exportData.toString().toByteArray(java.nio.charset.StandardCharsets.UTF_8)
+//            val base64String = android.util.Base64.encodeToString(rawBytes, android.util.Base64.NO_WRAP)
+
             // 3. Переводим в обычную JSON-строку с красивыми отступами (2 пробела)
             // Если нужен компактный вид в одну строку, используйте просто exportData.toString()
             val jsonString = exportData.toString(2)
