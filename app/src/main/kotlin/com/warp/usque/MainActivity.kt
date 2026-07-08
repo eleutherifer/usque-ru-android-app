@@ -382,8 +382,9 @@ class MainActivity : Activity() {
             btn.setPadding(dp(4), dp(2), dp(4), dp(2))
             
             // Отключаем встроенную минимальную высоту MaterialButton (чтобы кнопки не раздувались)
-            btn.minHeight = 0
-            btn.minimumHeight = 0
+  
+//            btn.minHeight = 0
+//            btn.minimumHeight = 0
         }
 
         exportConfigBtn = secondaryButton(tr("Экспорт всего конфига", "Export entire config"))
