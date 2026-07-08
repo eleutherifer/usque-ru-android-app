@@ -443,6 +443,9 @@ class MainActivity : Activity() {
         exportConfigBtn = secondaryButton(tr("Экспорт всего конфига", "Export entire config"))
         exportConfigBtn.isSingleLine = false
         exportConfigBtn.maxLines = 3
+        exportConfigBtn.isAllCaps= false
+        exportConfigBtn.ellipsize = null
+        exportConfigBtn.setPadding(dp(2), dp(0), dp(2), dp(0))
 
         importConfigBtn = secondaryButton(tr("Импорт из буфера", "Import from buffer"))
         importConfigBtn.isSingleLine = false
