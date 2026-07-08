@@ -424,8 +424,8 @@ class MainActivity : Activity() {
             btn.isAllCaps = false
             btn.ellipsize = null
             btn.setPadding(dp(4), dp(2), dp(4), dp(2))
-            btn.minHeight = 0
-            btn.minimumHeight = 0
+//            btn.minHeight = 0
+//            btn.minimumHeight = 0
         }
 
         // Настройка для нижней одиночной кнопки удаления (возвращаем стандартную комфортную высоту)
@@ -478,14 +478,14 @@ class MainActivity : Activity() {
 
         // Инициализируем и добавляем кнопку Экспорта (левая)
         exportConfigBtn = MaterialButton(this).apply {
-            text = "Экспорт"
+//            text = "Экспорт"
             setOnClickListener { exportAllConfigToClipboard() }
         }
         backupActions.addView(exportConfigBtn, LinearLayout.LayoutParams(0, dp(42), 1f).apply { rightMargin = dp(8) })
 
         // Инициализируем и добавляем кнопку Импорта (правая)
         importConfigBtn = MaterialButton(this).apply {
-            text = "Импорт"
+//            text = "Импорт"
             setOnClickListener { importAllConfigFromClipboard() }
         }
         backupActions.addView(importConfigBtn, LinearLayout.LayoutParams(0, dp(42), 1f))
