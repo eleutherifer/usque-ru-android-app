@@ -478,16 +478,16 @@ class MainActivity : Activity() {
 
         // Инициализируем и добавляем кнопку Экспорта (левая)
         exportConfigBtn = MaterialButton(this).apply {
-//            text = "Экспорт"
+            text = tr("Экспорт всего конфига", "Export entire config")
             setOnClickListener { exportAllConfigToClipboard() }
         }
         backupActions.addView(exportConfigBtn, LinearLayout.LayoutParams(0, dp(42), 1f).apply { rightMargin = dp(8) })
 
         // Инициализируем и добавляем кнопку Импорта (правая)
-        importConfigBtn = MaterialButton(this).apply {
+//        importConfigBtn = MaterialButton(this).apply {
 //            text = "Импорт"
-            setOnClickListener { importAllConfigFromClipboard() }
-        }
+//            setOnClickListener { importAllConfigFromClipboard() }
+//        }
         backupActions.addView(importConfigBtn, LinearLayout.LayoutParams(0, dp(42), 1f))
 
         // Укладываем готовый ряд кнопок бэкапа в основной вертикальный контейнер профилей
