@@ -142,11 +142,11 @@ jobs:
         run: |
           mkdir -p dist
           if [ -f app/build/outputs/apk/release/app-release.apk ]; then
-            cp app/build/outputs/apk/release/app-release.apk dist/usque-android-app-release.apk
+            cp app/build/outputs/apk/release/app-release.apk dist/usque-android-app-ru-release.apk
           elif [ -f app/build/outputs/apk/release/app-release-unsigned.apk ]; then
-            cp app/build/outputs/apk/release/app-release-unsigned.apk dist/usque-android-app-release-unsigned.apk
+            cp app/build/outputs/apk/release/app-release-unsigned.apk dist/usque-android-app-ru-release-unsigned.apk
           else
-            cp app/build/outputs/apk/debug/app-debug.apk dist/usque-android-app-debug.apk
+            cp app/build/outputs/apk/debug/app-debug.apk dist/usque-android-app-ru-debug.apk
           fi
           sha256sum dist/*.apk > dist/SHA256SUMS.txt
           cat dist/SHA256SUMS.txt
