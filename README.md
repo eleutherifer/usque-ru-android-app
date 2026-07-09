@@ -37,10 +37,10 @@ Download the latest APK from the [Releases](https://github.com/eleutherifer/usqu
 Direct download:
 
 ```text
-https://github.com/eleutherifer/usque-android-app-ru/releases/download/v1.0.2.1/usque-android-app-ru-release-v1.0.2.1.apk
+https://github.com/eleutherifer/usque-android-app-ru/releases/download/v1.0.3.1/usque-android-app-ru-release-v1.0.3.1.apk
 ```
 
-> The GitHub Actions workflow reads `versionName` from `app/build.gradle` and publishes the APK to the matching versioned Release, for example `1.0.2.1` → `v1.0.2.1`.
+> The GitHub Actions workflow reads `versionName` from `app/build.gradle` and publishes the APK to the matching versioned Release, for example `1.0.3.1` → `v1.0.3.1`.
 
 ## 🛠️ Build from Source
 
