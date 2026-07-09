@@ -461,6 +461,7 @@ class MainActivity : Activity() {
         // Создаем горизонтальный контейнер для первых двух кнопок с автоматической высотой
         val profileActions = LinearLayout(this).apply { 
             orientation = LinearLayout.HORIZONTAL 
+            baselineAligned = false
         }
         
         // Добавляем кнопки «Перезаписать» и «Сохранить как новый» с высотой WRAP_CONTENT
@@ -478,7 +479,10 @@ class MainActivity : Activity() {
         })
 
 
-        val backupActions = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val backupActions = LinearLayout(this).apply { 
+            orientation = LinearLayout.HORIZONTAL 
+            baselineAligned = false
+        }
         backupActions.addView(exportConfigBtn, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { rightMargin = dp(8) })
         backupActions.addView(importConfigBtn, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         profileBox.addView(backupActions, LinearLayout.LayoutParams(-1, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(8) })
