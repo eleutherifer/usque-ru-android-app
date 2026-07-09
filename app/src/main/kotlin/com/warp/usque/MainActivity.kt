@@ -426,7 +426,7 @@ class MainActivity : Activity() {
 //            btn.minHeight = 0
 //            btn.minimumHeight = 0
         }
-
+/*
         // Настройка для нижней одиночной кнопки удаления (возвращаем стандартную комфортную высоту)
         deleteProfileBtn.apply {
             isSingleLine = false
@@ -439,7 +439,7 @@ class MainActivity : Activity() {
             minHeight = dp(40)
             minimumHeight = dp(40)
         }
-
+*/
 
         exportConfigBtn = secondaryButton(tr("Экспорт всего конфига", "Export entire config"))
         importConfigBtn = secondaryButton(tr("Импорт из буфера", "Import from buffer"))
@@ -461,7 +461,7 @@ class MainActivity : Activity() {
         // Создаем горизонтальный контейнер для первых двух кнопок с автоматической высотой
         val profileActions = LinearLayout(this).apply { 
             orientation = LinearLayout.HORIZONTAL 
-            baselineAligned = false
+            isBaselineAligned = false
         }
         
         // Добавляем кнопки «Перезаписать» и «Сохранить как новый» с высотой WRAP_CONTENT
@@ -481,7 +481,7 @@ class MainActivity : Activity() {
 
         val backupActions = LinearLayout(this).apply { 
             orientation = LinearLayout.HORIZONTAL 
-            baselineAligned = false
+            isBaselineAligned = false
         }
         backupActions.addView(exportConfigBtn, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { rightMargin = dp(8) })
         backupActions.addView(importConfigBtn, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
