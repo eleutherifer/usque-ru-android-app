@@ -26,6 +26,7 @@ import android.util.Log
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
@@ -388,7 +389,7 @@ class MainActivity : Activity() {
         }
 
         exportConfigBtn = secondaryButton(tr("Экспорт всего конфига", "Export entire config"))
-        importConfigBtn = secondaryButton(tr("Импорт из буфера", "Import from buffer"))
+        importConfigBtn = secondaryButton(tr("Импорт конфига из буфера", "Import config from buffer"))
         profileBox.addView(TextView(this).apply { text = tr("Профили настроек", "Profiles"); textSize = 18f; setTextColor(textColor); setTypeface(null, Typeface.BOLD) })
         profileBox.addView(TextView(this).apply { text = tr("Сохранить текущие SNI / Endpoint / Port для быстрого переключения.", "Save current SNI / Endpoint / Port for quick switching."); textSize = 12f; setTextColor(subText); setPadding(0, dp(2), 0, dp(6)) })
         profileBox.addView(profileSpinner, LinearLayout.LayoutParams(-1, dp(42)))
@@ -805,15 +806,20 @@ class MainActivity : Activity() {
         var index = 2
         while (profiles.containsKey("$base $index")) index++
         return "$base $index"
-    }
     private fun deleteSelectedProfile() {
         val name = selectedProfileName()
         if (name.isBlank()) return
-        profiles.remove(name)
-        if (currentProfileName() == name) setCurrentProfileName(profiles.keys.firstOrNull().orEmpty())
-        persistProfiles(); refreshProfileSpinner(); toast("Удалено：$name")
+        MaterialAlertDialogBuilder(this)
+            .setTitle(tr("Удалить профиль?", "Delete profile?"))
+            .setMessage(tr("Профиль «$name» будет удалён без возможности восстановления.", "Profile \"$name\" will be permanently deleted."))
+            .setPositiveButton(tr("Удалить", "Delete")) { _, _ ->
+                profiles.remove(name)
+                if (currentProfileName() == name) setCurrentProfileName(profiles.keys.firstOrNull().orEmpty())
+                persistProfiles(); refreshProfileSpinner(); toast(tr("Удалено：$name", "Deleted: $name"))
+            }
+            .setNegativeButton(tr("Отмена", "Cancel"), null)
+            .show()
     }
-
     private fun loadSavedState() {
         loadProfiles()
         val saved = prefs.getString("endpoint", "162.159.198.2:443") ?: "162.159.198.2:443"
