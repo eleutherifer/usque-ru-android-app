@@ -85,11 +85,29 @@ jobs:
             -o "$GITHUB_WORKSPACE/app/libs/usque.aar" \
             ./android
 
-      - name: Извлечь usque-classes.jar из usque.aar
-        working-directory: app/libs
+      - name: Извлечь classes.jar и .so из usque.aar
         run: |
-          unzip -p usque.aar jars/classes.jar > usque-classes.jar
-          sha256sum usque.aar usque-classes.jar
+          echo "Содержимое usque.aar:"
+          unzip -l app/libs/usque.aar
+
+          cd app/libs
+          if unzip -p usque.aar jars/classes.jar > usque-classes.jar 2>/dev/null && [ -s usque-classes.jar ]; then
+            echo "classes.jar найден в jars/classes.jar"
+          elif unzip -p usque.aar classes.jar > usque-classes.jar 2>/dev/null && [ -s usque-classes.jar ]; then
+            echo "classes.jar найден в корне aar"
+          else
+            echo "::error::classes.jar не найден ни в jars/, ни в корне — см. листинг выше"
+            exit 1
+          fi
+          cd ../..
+
+          mkdir -p app/src/main/jniLibs/arm64-v8a app/src/main/jniLibs/armeabi-v7a
+          unzip -o app/libs/usque.aar "jni/arm64-v8a/*.so" -d /tmp/aar-jni
+          unzip -o app/libs/usque.aar "jni/armeabi-v7a/*.so" -d /tmp/aar-jni
+          cp /tmp/aar-jni/jni/arm64-v8a/*.so app/src/main/jniLibs/arm64-v8a/
+          cp /tmp/aar-jni/jni/armeabi-v7a/*.so app/src/main/jniLibs/armeabi-v7a/
+
+          sha256sum app/libs/usque.aar app/libs/usque-classes.jar app/src/main/jniLibs/*/*.so
 
       # ---------- Дальше — как раньше, без изменений: сборка/подпись APK ----------
 
