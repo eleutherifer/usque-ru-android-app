@@ -440,18 +440,19 @@ class MainActivity : Activity() {
             minimumHeight = dp(40)
         }
 
+
         exportConfigBtn = secondaryButton(tr("Экспорт всего конфига", "Export entire config"))
-        exportConfigBtn.isSingleLine = false
-        exportConfigBtn.maxLines = 3
-        exportConfigBtn.isAllCaps= false
-        exportConfigBtn.ellipsize = null
-        exportConfigBtn.setPadding(dp(2), dp(0), dp(2), dp(0))
-
         importConfigBtn = secondaryButton(tr("Импорт из буфера", "Import from buffer"))
-        importConfigBtn.isSingleLine = false
-        importConfigBtn.maxLines = 3
 
-        
+        val backupButtonsList = listOf(exportConfigBtn, importConfigBtn)
+        backupButtonsList.forEach { btn ->
+            btn.isSingleLine = false
+            btn.maxLines = 2
+            btn.isAllCaps = false
+            btn.ellipsize = null
+            btn.setPadding(dp(4), dp(2), dp(4), dp(2))
+        }
+
         profileBox.addView(TextView(this).apply { text = tr("Профили настроек", "Profiles"); textSize = 18f; setTextColor(textColor); setTypeface(null, Typeface.BOLD) })
         profileBox.addView(TextView(this).apply { text = tr("Сохранить текущие SNI / Endpoint / Port для быстрого переключения.", "Save current SNI / Endpoint / Port for quick switching."); textSize = 12f; setTextColor(subText); setPadding(0, dp(2), 0, dp(6)) })
         profileBox.addView(profileSpinner, LinearLayout.LayoutParams(-1, dp(42)))
@@ -477,29 +478,11 @@ class MainActivity : Activity() {
         })
 
 
+        val backupActions = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        backupActions.addView(exportConfigBtn, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { rightMargin = dp(8) })
+        backupActions.addView(importConfigBtn, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        profileBox.addView(backupActions, LinearLayout.LayoutParams(-1, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(8) })
 
-
-        // 🟢 НАШ НОВЫЙ БЛОК: Создаем горизонтальный ряд для Экспорта и Импорта
-        val backupActions = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-        }
-
-        // Инициализируем и добавляем кнопку Экспорта (левая)
-//        exportConfigBtn = MaterialButton(this).apply {
-//            text = tr("Экспорт всего конфига", "Export entire config")
-//            setOnClickListener { exportAllConfigToClipboard() }
-//        }
-        backupActions.addView(exportConfigBtn, LinearLayout.LayoutParams(0, dp(42), 1f).apply { rightMargin = dp(8) })
-
-        // Инициализируем и добавляем кнопку Импорта (правая)
-//        importConfigBtn = MaterialButton(this).apply {
-//            text = "Импорт"
-//            setOnClickListener { importAllConfigFromClipboard() }
-//        }
-        backupActions.addView(importConfigBtn, LinearLayout.LayoutParams(0, dp(42), 1f))
-
-        // Укладываем готовый ряд кнопок бэкапа в основной вертикальный контейнер профилей
-        profileBox.addView(backupActions, LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(8) })
 
 
         profileCard.addView(profileBox)
@@ -1414,11 +1397,12 @@ class MainActivity : Activity() {
 
             // 2. Читаем сохраненные профили (схемы переключения)
             // Имя файла "profiles.json" может отличаться, проверьте как оно названо в вашем коде
-            val profilesFile = File(filesDir, "profiles.json") 
-            if (profilesFile.exists()) {
-                exportData.put("profiles", JSONObject(profilesFile.readText()))
+            val profilesRaw = prefs.getString("profilesJson", null)
+            if (!profilesRaw.isNullOrBlank()) {
+                exportData.put("profiles", JSONArray(profilesRaw))
             }
 
+            
 //            // 3. Переводим в Base64, чтобы ТСПУ или мессенджеры не ломали структуру кавычек
 //            val rawBytes = exportData.toString().toByteArray(java.nio.charset.StandardCharsets.UTF_8)
 //            val base64String = android.util.Base64.encodeToString(rawBytes, android.util.Base64.NO_WRAP)
@@ -1475,16 +1459,15 @@ class MainActivity : Activity() {
 
             // 4. Восстанавливаем профили переключения
             if (importData.has("profiles")) {
-                val profilesFile = File(filesDir, "profiles.json")
-                profilesFile.writeText(importData.getJSONObject("profiles").toString(2))
+                val profilesArr = importData.getJSONArray("profiles")
+                prefs.edit().putString("profilesJson", profilesArr.toString()).apply()
             }
 
             // 5. Обновляем интерфейс приложения, чтобы новые данные отобразились на экране
             runOnUiThread {
                 toast("Конфигурация успешно импортирована!")
-                // Перерисовываем интерфейс (подгружаем новые SNI/IP в поля ввода)
+                loadProfiles()
                 refreshState("Конфиг обновлен")
-                // Вызываем встроенную китайскую функцию обновления полей, если она есть
                 runCatching { saveInputs() } 
             }
         } catch (e: Exception) {
