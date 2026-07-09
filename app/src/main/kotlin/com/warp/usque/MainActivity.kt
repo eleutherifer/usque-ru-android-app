@@ -267,7 +267,7 @@ class MainActivity : Activity() {
             setPadding(dp(18), dp(12), dp(18), dp(12))
         }
         val eyebrow = TextView(this).apply {
-            text = "VPN STATUS"
+            text = tr("СТАТУС VPN" "VPN STATUS")
             textSize = 12f
             letterSpacing = 0.16f
             setTextColor(onPrimary)
