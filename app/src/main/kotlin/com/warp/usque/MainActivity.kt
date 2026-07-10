@@ -688,6 +688,7 @@ class MainActivity : Activity() {
             .putString("endpoint", normalizedEndpoint())
             .putInt("connectPort", normalizedPort())
             .putBoolean("splitMode", splitModeSwitch.isChecked)
+            .putBoolean("useHttp2", useHttp2Switch.isChecked)
             .putStringSet("selectedPackages", selectedPackages.toSet())
             .apply()
         configDirty = false
@@ -838,6 +839,7 @@ class MainActivity : Activity() {
         sniInput.setText(prefs.getString("sni", "apteka.ru") ?: "apteka.ru")
         selectedPackages.clear(); selectedPackages.addAll(prefs.getStringSet("selectedPackages", emptySet()) ?: emptySet())
         splitModeSwitch.isChecked = prefs.getBoolean("splitMode", false)
+        useHttp2Switch.isChecked = prefs.getBoolean("useHttp2", false)
         if (currentProfileName().isBlank() && profiles.isNotEmpty()) setCurrentProfileName(profiles.keys.first())
         configDirty = false
         updateConfigState(); updateModeUi(); refreshHomeProfileSpinner(); updateCurrentProfileUi()
