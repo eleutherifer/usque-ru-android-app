@@ -1176,6 +1176,7 @@ class MainActivity : Activity() {
         val sni = sniInput.text?.toString().orEmpty().ifBlank { "apteka.ru" }
         val endpoint = "${normalizedEndpointHost()}:${normalizedPort()}"
         val splitMode = splitModeSwitch.isChecked
+        val useHttp2 = useHttp2Switch.isChecked
         val allowedApps = if (splitMode) selectedPackagesForVpn() else arrayListOf()
         log(if (splitMode) "Запуск раздельного VPN: ${allowedApps.size} прил. · $endpoint" else "Запуск глобального VPN: $endpoint")
         resetSpeedMeter()
@@ -1186,6 +1187,7 @@ class MainActivity : Activity() {
             .putExtra("sni", sni)
             .putExtra("endpoint", endpoint)
             .putExtra("splitMode", splitMode)
+            .putExtra("useHttp2", useHttp2)
             .putStringArrayListExtra("allowedApps", allowedApps)
         startService(intent)
         log("Служба VPN успешно запущена")

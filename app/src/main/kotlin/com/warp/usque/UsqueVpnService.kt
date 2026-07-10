@@ -68,6 +68,7 @@ class UsqueVpnService : VpnService() {
 
         val configPath = intent?.getStringExtra("configPath") ?: File(filesDir, "config.json").absolutePath
         val splitMode = intent?.getBooleanExtra("splitMode", false) ?: false
+        val useHttp2 = intent?.getBooleanExtra("useHttp2", false) ?: false
         val allowedApps = intent?.getStringArrayListExtra("allowedApps") ?: arrayListOf()
 
         // УМНЫЙ ЧИТАТЕЛЬ КОНФИГА: Читаем сохраненные воркером MASQUE данные
@@ -110,7 +111,7 @@ class UsqueVpnService : VpnService() {
         lastAllowedApps = ArrayList(allowedApps)
 
         if (running.get()) return Service.START_STICKY
-        executor.execute { startNativeTunnel(configPath, sni, endpoint, splitMode, allowedApps) }
+        executor.execute { startNativeTunnel(configPath, sni, endpoint, splitMode, useHttp2, allowedApps) }
         return Service.START_STICKY
     }
 
@@ -121,6 +122,7 @@ class UsqueVpnService : VpnService() {
             Usqueandroid.resetConnectionOptions()
             Usqueandroid.setSNI(sni)
             Usqueandroid.setEndpoint(endpoint)
+            Usqueandroid.setUseHttp2(useHttp2)
             Log.i(TAG, "native endpoint now=${runCatching { Usqueandroid.getEndpoint() }.getOrDefault("")}")
 
             val builder = Builder()
