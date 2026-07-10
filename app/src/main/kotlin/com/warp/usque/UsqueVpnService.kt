@@ -115,7 +115,7 @@ class UsqueVpnService : VpnService() {
         return Service.START_STICKY
     }
 
-    private fun startNativeTunnel(configPath: String, sni: String, endpoint: String, splitMode: Boolean, allowedApps: ArrayList<String>) {
+    private fun startNativeTunnel(configPath: String, sni: String, endpoint: String, splitMode: Boolean, useHttp2: Boolean, allowedApps: ArrayList<String>) {
         try {
             running.set(true)
             Log.i(TAG, "starting vpn service endpoint=$endpoint sni=$sni splitMode=$splitMode allowedApps=${allowedApps.size} config=$configPath")
