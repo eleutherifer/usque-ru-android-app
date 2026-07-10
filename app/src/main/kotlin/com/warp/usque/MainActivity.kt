@@ -64,6 +64,7 @@ class MainActivity : Activity() {
     private lateinit var modeValue: TextView
     private lateinit var modeHint: TextView
     private lateinit var splitModeSwitch: MaterialSwitch
+    private lateinit var useHttp2Switch: MaterialSwitch
     private lateinit var appSearchInput: TextInputEditText
     private lateinit var appSection: MaterialCardView
     private lateinit var appListContainer: LinearLayout
@@ -334,12 +335,20 @@ class MainActivity : Activity() {
                 markDirty(); saveSelectedApps(); updateModeUi(); refreshAppList()
             }
         }
+        useHttp2Switch = MaterialSwitch(this).apply {
+            text = tr("HTTP/2 вместо QUIC (обход блокировки UDP)", "HTTP/2 instead of QUIC (bypass UDP blocking)")
+            textSize = 16f
+            setTextColor(textColor)
+            setPadding(0, dp(6), 0, 0)
+            setOnCheckedChangeListener { _, _ -> markDirty() }
+        }
         modeBox.addView(modeValue)
         modeBox.addView(modeHint)
         modeBox.addView(splitModeSwitch)
+        modeBox.addView(useHttp2Switch)
         modeCard.addView(modeBox)
         content.addView(modeCard)
-
+       
         ipv4Text = TextView(this)
         ipv6Text = TextView(this)
         configStateText = TextView(this)
