@@ -42,6 +42,7 @@ class UsqueVpnService : VpnService() {
     @Volatile private var lastSni: String = ""
     @Volatile private var lastEndpoint: String = ""
     @Volatile private var lastSplitMode: Boolean = false
+    @Volatile private var lastUseHttp2: Boolean = false    
     @Volatile private var lastAllowedApps: ArrayList<String> = arrayListOf()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -213,7 +214,7 @@ class UsqueVpnService : VpnService() {
             // Allow a failed retry to schedule another retry instead of getting stuck after one attempt.
             restarting.set(false)
             startForegroundCompat()
-            startNativeTunnel(lastConfigPath, lastSni, lastEndpoint, lastSplitMode, ArrayList(lastAllowedApps))
+            startNativeTunnel(lastConfigPath, lastSni, lastEndpoint, lastSplitMode, lastUseHttp2, ArrayList(lastAllowedApps))
         }
     }
 
