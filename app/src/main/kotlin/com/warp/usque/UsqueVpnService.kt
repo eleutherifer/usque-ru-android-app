@@ -220,11 +220,7 @@ class UsqueVpnService : VpnService() {
         runCatching { tun?.close() }
             .onFailure { Log.w(TAG, "tun close failed", it) }
         tun = null
-        if (detachedTunFd >= 0) {
-            runCatching { Os.close(fileDescriptorFromInt(detachedTunFd)) }
-                .onFailure { Log.w(TAG, "detached fd close failed", it) }
-            detachedTunFd = -1
-        }
+        detachedTunFd = -1
     }
 
     private fun fileDescriptorFromInt(fdInt: Int): FileDescriptor {
