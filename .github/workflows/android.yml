@@ -15,6 +15,8 @@ on:
         description: 'Ветка / тег / коммит — только для ручного запуска'
         required: false
         default: 'main'
+  repository_dispatch:
+    types: [ usque-source-updated ]
   release:
     types: [ published ]
 
