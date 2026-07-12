@@ -114,7 +114,7 @@ docs/github-actions-signing.md
 
 | Parameter | Example / Default | Description |
 |-----------|-------------------|-------------|
-| SNI | `apteka.ru` | TLS SNI value used by the tunnel |
+| SNI | `my.mail.ru` | TLS SNI value used by the tunnel |
 | Endpoint | `162.159.198.2:433` | WARP / MASQUE endpoint |
 | Mode | Global / Per-App | Traffic routing mode |
 

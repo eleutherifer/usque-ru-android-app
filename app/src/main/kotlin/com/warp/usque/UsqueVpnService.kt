@@ -66,7 +66,7 @@ class UsqueVpnService : VpnService() {
         manualStop.set(false)
 
         val configPath = intent?.getStringExtra("configPath") ?: File(filesDir, "config.json").absolutePath
-        val sni = intent?.getStringExtra("sni") ?: "apteka.ru"
+        val sni = intent?.getStringExtra("sni") ?: "my.mail.ru"
         val endpoint = intent?.getStringExtra("endpoint") ?: "162.159.198.2:443"
         val splitMode = intent?.getBooleanExtra("splitMode", false) ?: false
         val useHttp2 = intent?.getBooleanExtra("useHttp2", false) ?: false
