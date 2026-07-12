@@ -1,10 +1,12 @@
 package com.warp.usque
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.ClipboardManager
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
@@ -115,6 +117,15 @@ class MainActivity : Activity() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        registerReceiver(vpnStateReceiver, IntentFilter(UsqueVpnService.ACTION_VPN_STATE), Context.RECEIVER_NOT_EXPORTED)
+    }
+    override fun onStop() {
+        super.onStop()
+        runCatching { unregisterReceiver(vpnStateReceiver) }
     }
 
     private val speedTicker = object : Runnable {

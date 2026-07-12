@@ -252,13 +252,4 @@ class UsqueVpnService : VpnService() {
         })
     }
 
-    override fun onStart() {
-        super.onStart()
-        registerReceiver(vpnStateReceiver, IntentFilter(UsqueVpnService.ACTION_VPN_STATE), Context.RECEIVER_NOT_EXPORTED)
-    }
-    override fun onStop() {
-        super.onStop()
-        runCatching { unregisterReceiver(vpnStateReceiver) }
-    }
-
 }
