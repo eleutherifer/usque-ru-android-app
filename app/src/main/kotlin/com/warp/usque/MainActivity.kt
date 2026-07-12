@@ -98,6 +98,25 @@ class MainActivity : Activity() {
     private var lastRxBytes = 0L
     private var lastTxBytes = 0L
     private var lastSpeedTs = 0L
+
+    private var tunnelReallyConnected = false
+
+    private val vpnStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.getStringExtra(UsqueVpnService.EXTRA_STATE)) {
+                "connected" -> {
+                    tunnelReallyConnected = true
+                    refreshState(if (splitModeSwitch.isChecked) tr("Раздельный режим", "Split mode") else tr("Глобальный режим", "Global Mode"))
+                }
+                "reconnecting" -> {
+                    tunnelReallyConnected = false
+                    val msg = intent.getStringExtra(UsqueVpnService.EXTRA_MESSAGE).orEmpty()
+                    refreshState(tr("Переподключение… $msg", "Reconnecting… $msg"))
+                }
+            }
+        }
+    }
+
     private val speedTicker = object : Runnable {
         override fun run() {
             updateSpeedLine()

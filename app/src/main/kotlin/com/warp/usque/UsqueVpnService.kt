@@ -22,6 +22,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 class UsqueVpnService : VpnService() {
     companion object {
         const val ACTION_STOP = "com.warp.usque.STOP_VPN"
+        const val ACTION_VPN_STATE = "com.warp.usque.VPN_STATE"
+        const val EXTRA_STATE = "state"
+        const val EXTRA_MESSAGE = "message"
         private const val TAG = "UsqueVpnService"
         private const val NOTIFICATION_ID = 1001
         private const val CHANNEL_ID = "usque_vpn"
@@ -130,13 +133,16 @@ class UsqueVpnService : VpnService() {
                 override fun onConnected() {
                     restarting.set(false)
                     Log.i(TAG, "tunnel connected")
+                    broadcastState("connected")
                 }
                 override fun onDisconnected(reason: String?) {
                     Log.w(TAG, "tunnel disconnected: $reason")
+                    broadcastState("reconnecting", reason.orEmpty())
                     handleTunnelFailure("native disconnected: ${reason.orEmpty()}")
                 }
                 override fun onError(message: String?) {
                     Log.e(TAG, "tunnel error: $message")
+                    broadcastState("reconnecting", message.orEmpty())
                     handleTunnelFailure("native error: ${message.orEmpty()}")
                 }
             })
@@ -237,4 +243,22 @@ class UsqueVpnService : VpnService() {
         if (activeService === this) activeService = null
         super.onDestroy()
     }
+
+    private fun broadcastState(state: String, message: String = "") {
+        sendBroadcast(Intent(ACTION_VPN_STATE).apply {
+            setPackage(packageName)
+            putExtra(EXTRA_STATE, state)
+            putExtra(EXTRA_MESSAGE, message)
+        })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        registerReceiver(vpnStateReceiver, IntentFilter(UsqueVpnService.ACTION_VPN_STATE), Context.RECEIVER_NOT_EXPORTED)
+    }
+    override fun onStop() {
+        super.onStop()
+        runCatching { unregisterReceiver(vpnStateReceiver) }
+    }
+
 }
