@@ -91,7 +91,7 @@ class UsqueVpnService : VpnService() {
             Usqueandroid.resetConnectionOptions()
             Usqueandroid.setSNI(sni)
             Usqueandroid.setEndpoint(endpoint)
-            Usqueandroid.setUseHttp2(useHttp2)
+//            Usqueandroid.setUseHttp2(useHttp2)
             Log.i(TAG, "native endpoint now=${runCatching { Usqueandroid.getEndpoint() }.getOrDefault("")}")
 
             val builder = Builder()
