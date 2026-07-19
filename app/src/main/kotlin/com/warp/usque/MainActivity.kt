@@ -127,6 +127,9 @@ class MainActivity : Activity() {
     }
 */
 
+
+// 2026.07.19 TEST Функции onStart(), onStop() закомментированы для проверки
+/*
     override fun onStart() {
         super.onStart()
         UsqueVpnService.stateListener = { state, message ->
@@ -157,6 +160,7 @@ class MainActivity : Activity() {
         super.onStop()
         UsqueVpnService.stateListener = null
     }
+*/
 
     private val speedTicker = object : Runnable {
         override fun run() {
