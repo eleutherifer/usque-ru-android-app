@@ -87,12 +87,16 @@ class UsqueVpnService : VpnService() {
 
     private fun startNativeTunnel(configPath: String, sni: String, endpoint: String, splitMode: Boolean, useHttp2: Boolean, allowedApps: ArrayList<String>) {
         try {
+            manualStop.set(false)
             running.set(true)
             Log.i(TAG, "starting vpn service endpoint=$endpoint sni=$sni splitMode=$splitMode allowedApps=${allowedApps.size} config=$configPath")
             Usqueandroid.resetConnectionOptions()
             Usqueandroid.setSNI(sni)
             Usqueandroid.setEndpoint(endpoint)
-            Usqueandroid.setUseHttp2(useHttp2)
+
+// 2026.07.19 TEST ТЕСТ Закомментировано для сборки со старой библиотекой
+//            Usqueandroid.setUseHttp2(useHttp2)
+
             Log.i(TAG, "native endpoint now=${runCatching { Usqueandroid.getEndpoint() }.getOrDefault("")}")
 
             val builder = Builder()
@@ -230,6 +234,9 @@ class UsqueVpnService : VpnService() {
             return
         }
         try {
+            manualStop.set(true) // важно: выставляем СРАЗУ, а не только в onDestroy/onRevoke —
+                                  // иначе есть окно, где Go успевает вызвать OnDisconnected раньше,
+                                  // и handleTunnelFailure() решает, что это надо переподключать
             Log.i(TAG, "stopping vpn: $reason fd=$detachedTunFd running=${running.get()}")
             running.set(false)
             runCatching { Usqueandroid.stopTunnel() }
