@@ -1253,10 +1253,10 @@ class MainActivity : Activity() {
         val splitMode = splitModeSwitch.isChecked
         val useHttp2 = useHttp2Switch.isChecked
         val allowedApps = if (splitMode) selectedPackagesForVpn() else arrayListOf()
-        log(if (splitMode) "Запуск раздельного VPN: ${allowedApps.size} прил. · $endpoint" else "Запуск глобального VPN: $endpoint")
+        log(if (splitMode) tr("Запуск раздельного VPN: ${allowedApps.size} прил. · $endpoint", "Starting split VPN: ${allowedApps.size} apps · $endpoint") else tr("Запуск глобального VPN: $endpoint", "Starting global VPN: $endpoint"))
         resetSpeedMeter()
         vpnRunning = true
-        refreshState("Запуск")
+        refreshState(tr("Запуск", "Starting"))
         val intent = Intent(this, UsqueVpnService::class.java)
             .putExtra("configPath", configFile.absolutePath)
             .putExtra("sni", sni)
@@ -1265,20 +1265,20 @@ class MainActivity : Activity() {
             .putExtra("useHttp2", useHttp2)
             .putStringArrayListExtra("allowedApps", allowedApps)
         startService(intent)
-        log("Служба VPN успешно запущена")
-        refreshState(if (splitMode) "Раздельный режим" else "Глобальный режим")
+        log(tr("Служба VPN успешно запущена", "VPN service started"))
+        refreshState(if (splitMode) tr("Раздельный режим", "Split mode running") else tr("Глобальный режим", "Global mode running"))
     }
 
     private fun disconnectVpn() {
-        log("Остановка службы VPN...")
+        log(tr("Остановка службы VPN...", "Stopping VPN service…"))
         vpnRunning = false
-        refreshState("Остановка")
+        refreshState(tr("Остановка", "Stopping"))
         resetSpeedMeter()
         UsqueVpnService.stopActiveTunnel()
         runCatching { startService(Intent(this, UsqueVpnService::class.java).setAction(UsqueVpnService.ACTION_STOP)) }
         handler.postDelayed({ 
             runCatching { stopService(Intent(this, UsqueVpnService::class.java)) }
-            onTunnelStopped("Остановлено") 
+            onTunnelStopped(tr("Остановлено", "Stopped")) 
         }, 500)
     }
 
@@ -1295,7 +1295,7 @@ class MainActivity : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQ_VPN && resultCode == RESULT_OK) { vpnGranted = true; if (hasValidRegistration()) startTunnelNow() else connectVpn() }
-        else if (requestCode == REQ_VPN) toast("Доступ к VPN не разрешен в системе")
+        else if (requestCode == REQ_VPN) toast(tr("Доступ к VPN не разрешен в системе", "VPN permission denied"))
     }
 
 /*
