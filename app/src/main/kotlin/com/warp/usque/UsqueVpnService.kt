@@ -22,9 +22,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 class UsqueVpnService : VpnService() {
     companion object {
         const val ACTION_STOP = "com.warp.usque.STOP_VPN"
-        const val ACTION_VPN_STATE = "com.warp.usque.VPN_STATE"
-        const val EXTRA_STATE = "state"
-        const val EXTRA_MESSAGE = "message"
+//        const val ACTION_VPN_STATE = "com.warp.usque.VPN_STATE"
+//        const val EXTRA_STATE = "state"
+//        const val EXTRA_MESSAGE = "message"
         private const val TAG = "UsqueVpnService"
         private const val NOTIFICATION_ID = 1001
         private const val CHANNEL_ID = "usque_vpn"
@@ -33,6 +33,7 @@ class UsqueVpnService : VpnService() {
             private set
         @Volatile var isServiceConnected: Boolean = false
             private set
+        @Volatile var stateListener: ((state: String, message: String) -> Unit)? = null
 
         fun stopActiveTunnel() {
             activeService?.stopVpn("external stop") ?: runCatching { Usqueandroid.stopTunnel() }
@@ -276,11 +277,7 @@ class UsqueVpnService : VpnService() {
     private fun broadcastState(state: String, message: String = "") {
         isServiceRunning = (state != "disconnected")
         isServiceConnected = (state == "connected")
-        sendBroadcast(Intent(ACTION_VPN_STATE).apply {
-            setPackage(packageName)
-            putExtra(EXTRA_STATE, state)
-            putExtra(EXTRA_MESSAGE, message)
-        })
+        stateListener?.invoke(state, message)
     }
 
 }

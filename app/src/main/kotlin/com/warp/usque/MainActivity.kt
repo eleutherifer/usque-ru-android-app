@@ -1,12 +1,12 @@
 package com.warp.usque
 
 import android.app.Activity
-import android.content.BroadcastReceiver
+//import android.content.BroadcastReceiver
 import android.content.ClipboardManager
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
+//import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
@@ -103,6 +103,7 @@ class MainActivity : Activity() {
 
     private var tunnelReallyConnected = false
 
+/*
     private val vpnStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.getStringExtra(UsqueVpnService.EXTRA_STATE)) {
@@ -124,17 +125,37 @@ class MainActivity : Activity() {
             }
         }
     }
+*/
 
     override fun onStart() {
         super.onStart()
-        registerReceiver(vpnStateReceiver, IntentFilter(UsqueVpnService.ACTION_VPN_STATE), Context.RECEIVER_NOT_EXPORTED)
+        UsqueVpnService.stateListener = { state, message ->
+            runOnUiThread {
+                when (state) {
+                    "connected" -> {
+                        tunnelReallyConnected = true
+                        refreshState(if (splitModeSwitch.isChecked) tr("Раздельный режим", "Split mode") else tr("Глобальный режим", "Global Mode"))
+                    }
+                    "reconnecting" -> {
+                        tunnelReallyConnected = false
+                        refreshState(tr("Переподключение… $message", "Reconnecting… $message"))
+                    }
+                    "disconnected" -> {
+                        vpnRunning = false
+                        tunnelReallyConnected = false
+                        refreshState(message)
+                    }
+                }
+            }
+        }
         vpnRunning = UsqueVpnService.isServiceRunning
         tunnelReallyConnected = UsqueVpnService.isServiceConnected
         refreshState()
     }
+
     override fun onStop() {
         super.onStop()
-        runCatching { unregisterReceiver(vpnStateReceiver) }
+        UsqueVpnService.stateListener = null
     }
 
     private val speedTicker = object : Runnable {
