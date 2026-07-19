@@ -95,7 +95,7 @@ class UsqueVpnService : VpnService() {
             Usqueandroid.setEndpoint(endpoint)
 
 // 2026.07.19 TEST ТЕСТ Закомментировано для сборки со старой библиотекой
-//            Usqueandroid.setUseHttp2(useHttp2)
+            Usqueandroid.setUseHttp2(useHttp2)
 
             Log.i(TAG, "native endpoint now=${runCatching { Usqueandroid.getEndpoint() }.getOrDefault("")}")
 
