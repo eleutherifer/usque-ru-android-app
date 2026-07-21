@@ -142,11 +142,11 @@ class UsqueVpnService : VpnService() {
             val err = Usqueandroid.startTunnelWithFd(configPath, detachedTunFd.toLong(), object : VpnStateCallback {
                 override fun onConnected() {
                     restarting.set(false)
-                    Log.i(TAG, "tunnel connected")
+//                    Log.i(TAG, "tunnel connected")
                     broadcastState("connected")
                 }
                 override fun onDisconnected(reason: String?) {
-                    Log.w(TAG, "tunnel disconnected: $reason")
+//                    Log.w(TAG, "tunnel disconnected: $reason")
                     broadcastState(if (manualStop.get()) "disconnected" else "reconnecting", reason.orEmpty())
                     handleTunnelFailure("native disconnected: ${reason.orEmpty()}")
                 }
@@ -230,14 +230,14 @@ class UsqueVpnService : VpnService() {
 
     private fun stopVpn(reason: String = "stop") {
         if (!stopping.compareAndSet(false, true)) {
-            Log.i(TAG, "stopVpn($reason) skipped — уже останавливается")
+//            Log.i(TAG, "stopVpn($reason) skipped — уже останавливается")
             return
         }
         try {
             manualStop.set(true) // важно: выставляем СРАЗУ, а не только в onDestroy/onRevoke —
                                   // иначе есть окно, где Go успевает вызвать OnDisconnected раньше,
                                   // и handleTunnelFailure() решает, что это надо переподключать
-            Log.i(TAG, "stopping vpn: $reason fd=$detachedTunFd running=${running.get()}")
+//            Log.i(TAG, "stopping vpn: $reason fd=$detachedTunFd running=${running.get()}")
             running.set(false)
             runCatching { Usqueandroid.stopTunnel() }
                 .onFailure { Log.w(TAG, "native stopTunnel failed", it) }
