@@ -1030,6 +1030,7 @@ class MainActivity : Activity() {
         if (splitModeSwitch.isChecked && selectedPackages.isEmpty()) { toast(tr("Выберите хотя бы одно приложение", "Select at least one app")); log(tr("Выберите хотя бы одно приложение перед подлючением в раздельном режиме", "Select at least one app before connecting in split mode")); refreshState("Приложение не выбрано"); return }
         if (!hasValidRegistration()) {
             log(tr("Не найдена действительная регистрация. Автоматическая регистрация…", "No valid registration found. Registering automatically…"))
+            refreshState(tr("Регистрация...", "Registration...")) 
             executor.execute {
                 try {
                     deleteInvalidConfigIfNeeded()
